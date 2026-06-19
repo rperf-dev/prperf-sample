@@ -7,23 +7,28 @@ class ReportBuilder
   end
 
   def summary
-    by_category = Hash.new { |h, k| h[k] = { count: 0, revenue_cents: 0, in_stock: 0 } }
-
-    @products.each do |p|
-      agg = by_category[p[:category]]
-      agg[:count] += 1
-      agg[:revenue_cents] += p[:price_cents] * p[:stock]
-      agg[:in_stock] += 1 if p[:stock].positive?
-    end
-
     {
       total_products: @products.size,
-      categories: by_category.sort.map { |name, agg| { name: name, **agg } },
+      categories: Catalog::CATEGORIES.sort.map { |category| category_summary(category) },
       top_value: top_value(5)
     }
   end
 
   private
+
+  # Per-category rollup — now with an average price and a human-readable label
+  # for each item, so clients don't have to format names themselves.
+  def category_summary(category)
+    items = @products.select { |p| p[:category] == category }
+    {
+      name: category,
+      count: items.size,
+      revenue_cents: items.sum { |p| p[:price_cents] * p[:stock] },
+      in_stock: items.count { |p| p[:stock].positive? },
+      avg_price_cents: items.sum { |p| p[:price_cents] } / items.size,
+      items: items.map { |p| "#{p[:name]} — #{p[:category]}" }
+    }
+  end
 
   # The five products with the highest price * stock, in one pass.
   def top_value(limit)
