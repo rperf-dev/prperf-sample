@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write          # required: prperf uploads authenticate via the OIDC token
+      id-token: write          # prperf uploads authenticate via the OIDC token
+      checks: write            # write the Check Run (public repo, install-free)
+      pull-requests: write     # write the sticky comment
     env:
       RAILS_ENV: benchmark
       SECRET_KEY_BASE: benchmark-dummy-not-secret
@@ -21,6 +23,6 @@ jobs:
       - uses: rperf-dev/prperf-action@v1
         with:
           benchmark: report
-          run: bundle exec rperf record --snapshot-dir "$PRPERF_DIR" -- ruby bench/request.rb
+          run: ruby bench/request.rb   # the action wraps this in `bundle exec rperf record`
           thresholds: |
             alloc: "+5%"         # a tiny allocation regression is enough to warn
