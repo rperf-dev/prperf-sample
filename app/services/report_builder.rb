@@ -7,10 +7,12 @@ class ReportBuilder
   end
 
   def summary
-    by_category = Hash.new { |h, k| h[k] = { count: 0, revenue_cents: 0, in_stock: 0 } }
+    # One hash per category, built in place and sorted once: no default-proc
+    # hash, no [name, agg] pairs from Hash#sort, no `**agg` re-copy per entry.
+    by_category = {}
 
     @products.each do |p|
-      agg = by_category[p[:category]]
+      agg = by_category[p[:category]] ||= { name: p[:category], count: 0, revenue_cents: 0, in_stock: 0 }
       agg[:count] += 1
       agg[:revenue_cents] += p[:price_cents] * p[:stock]
       agg[:in_stock] += 1 if p[:stock].positive?
@@ -18,7 +20,7 @@ class ReportBuilder
 
     {
       total_products: @products.size,
-      categories: by_category.sort.map { |name, agg| { name: name, **agg } },
+      categories: by_category.values.sort_by! { |agg| agg[:name] },
       top_value: top_value(5)
     }
   end
