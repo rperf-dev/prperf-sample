@@ -6,8 +6,8 @@ gem "rails", "~> 8.1.3"
 gem "puma", ">= 5.0"
 
 # The rperf profiler — prperf-action measures the benchmark with the bundle's
-# rperf (>= 0.11, for `rperf record --print-env`).
-gem "rperf", "~> 0.11"
+# rperf. 0.11.1 or later is needed (for `rperf record --print-env`).
+gem "rperf", "~> 0.11.1"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]

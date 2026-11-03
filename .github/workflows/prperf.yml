@@ -23,6 +23,6 @@ jobs:
       - uses: rperf-dev/prperf-action@v1
         with:
           benchmark: report
-          run: ruby bench/request.rb   # the action wraps this in `bundle exec rperf record`
+          run: ruby bench/request.rb   # the action records this command under rperf
           thresholds: |
             alloc: "+5%"         # a tiny allocation regression is enough to warn

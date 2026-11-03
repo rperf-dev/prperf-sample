@@ -226,7 +226,7 @@ DEPENDENCIES
   debug
   puma (>= 5.0)
   rails (~> 8.1.3)
-  rperf (~> 0.11)
+  rperf (~> 0.11.1)
   tzinfo-data
 
 CHECKSUMS
