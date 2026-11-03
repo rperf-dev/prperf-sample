@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:   # re-record the base by hand (e.g. after an action change)
 
 jobs:
   bench:
